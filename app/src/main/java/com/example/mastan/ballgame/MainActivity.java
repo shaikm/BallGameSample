@@ -18,11 +18,13 @@ public class MainActivity extends Activity {
     private FrameLayout surface;
     private boolean locker=true;
     private Thread thread;
+    private BouncingBallView ballView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_surface_view);
+
 
 
         surface = (FrameLayout) findViewById(R.id.mysurface);
@@ -34,7 +36,8 @@ public class MainActivity extends Activity {
                     // When user touches the screen
                     case MotionEvent.ACTION_DOWN:
 
-                        surface.addView(new BouncingBallView(getApplicationContext(), (int) event.getX(), (int) event.getY()));
+                        ballView = new BouncingBallView(getApplicationContext(), (int) event.getX(), (int) event.getY());
+                        surface.addView(ballView);
                         // Setting the coordinates on TextView
 
                 }
@@ -42,4 +45,25 @@ public class MainActivity extends Activity {
             }
         });
     }
+
+    public void pause(View v)
+    {
+        for (int i=0; i< surface.getChildCount(); i++)
+        {
+           if(surface.getChildAt(i) instanceof BouncingBallView)
+               ((BouncingBallView)surface.getChildAt(i)).pause();
+        }
+
+    }
+
+    public void play(View v)
+    {
+        for (int i=0; i< surface.getChildCount(); i++)
+        {
+            if(surface.getChildAt(i) instanceof BouncingBallView)
+                ((BouncingBallView)surface.getChildAt(i)).play();
+        }
+    }
+
+
 }

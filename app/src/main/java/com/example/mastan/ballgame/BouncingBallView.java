@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.os.Handler;
+import android.view.MotionEvent;
 import android.view.View;
 
 import java.util.Random;
@@ -21,26 +22,30 @@ public class BouncingBallView extends View {
     private float ballRadius = 40; // Ball's radius
     private float ballX ;  // Ball's center (x,y)
     private float ballY ;
-    private float ballSpeedX = 30;  // Ball's speed (x,y)
-    private float ballSpeedY = 30;
+    private float ballSpeedX = 20;  // Ball's speed (x,y)
+    private float ballSpeedY = 20;
     private RectF ballBounds;      // Needed for Canvas.drawOval
     private Paint paint;           // The paint (e.g. style, color) used for drawing
-    private boolean direction;
-    Random rnd = new Random();
+
+    private Handler h;
     public BouncingBallView(Context context, int x, int y) {
         super(context);
         ballBounds = new RectF();
         paint = new Paint();
         ballY = y;
         ballX = x;
-        direction = getRandomBoolean(rnd);
+        h = new Handler();
     }
 
-    private boolean getRandomBoolean(Random rnd) {
-        return rnd.nextBoolean();
-    }
 
-    // Called back to draw the view. Also called by invalidate().
+    private Runnable r = new Runnable() {
+        @Override
+        public void run() {
+            invalidate();
+        }
+    };
+
+    // Called back to draw the view.
     @Override
     protected void onDraw(Canvas canvas) {
         // Draw the ball
@@ -51,41 +56,26 @@ public class BouncingBallView extends View {
         // Update the position of the ball, including collision detection and reaction.
         update();
 
-        try {
-            Thread.sleep(60);
-        } catch (InterruptedException e) { }
-
-        invalidate();  // Force a re-draw
+        h.postDelayed(r, 30);
     }
 
     // Detect collision and update the position of the ball.
     private void update() {
 
-        if(direction){
             ballX += ballSpeedX;
-        }else {
             ballY += ballSpeedY;
-        }
 
         // Detect collision and react
-        if (ballX + ballRadius > xMax) {
-            ballSpeedX = -ballSpeedX;
+        if (ballX + ballRadius > xMax || ballX < 0) {
+            ballSpeedX = ballSpeedX*-1;
         } else if (ballX - ballRadius < xMin) {
-            ballSpeedX = -ballSpeedX;
+            ballSpeedX = ballSpeedX*-1;
         }
         if (ballY + ballRadius > yMax) {
-            ballSpeedY = -ballSpeedY;
+            ballSpeedY = ballSpeedY*-1;
         } else if (ballY - ballRadius < yMin) {
-            ballSpeedY = -ballSpeedY;
+            ballSpeedY = ballSpeedY*-1;
         }
-    }
-
-
-    private float randomInRange(float min, float max) {
-        float range = max - min;
-        float scaled = rnd.nextFloat() * range;
-        float shifted = scaled + min;
-        return shifted; // == (rand.nextDouble() * (max-min)) + min;
     }
 
     // Called back when the view is first created or its size changes.
@@ -96,5 +86,14 @@ public class BouncingBallView extends View {
          xMax = MeasureSpec.getSize(widthMeasureSpec);
          yMax = MeasureSpec.getSize(heightMeasureSpec);
 
+    }
+
+
+    public  void pause() {
+        h.removeCallbacks(r);
+    }
+    public void play()
+    {
+        h.postDelayed(r,30);
     }
 }

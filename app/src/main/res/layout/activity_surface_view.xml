@@ -13,4 +13,24 @@
         android:layout_centerVertical="true"
         android:layout_margin="10dp" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pause"
+        android:onClick="pause"
+        android:layout_margin="20dp"
+        android:id="@+id/btnPause"
+        android:layout_above="@+id/mysurface"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Resume"
+        android:layout_marginRight="20dp"
+        android:id="@+id/btnResume"
+        android:onClick="play"
+        android:layout_alignTop="@+id/btnPause"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
 </RelativeLayout>
