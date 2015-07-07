@@ -19,6 +19,7 @@ public class MainActivity extends Activity {
     private boolean locker=true;
     private Thread thread;
     private BouncingBallView ballView;
+    private boolean paused;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,6 +49,7 @@ public class MainActivity extends Activity {
 
     public void pause(View v)
     {
+        paused = true;
         for (int i=0; i< surface.getChildCount(); i++)
         {
            if(surface.getChildAt(i) instanceof BouncingBallView)
@@ -56,14 +58,14 @@ public class MainActivity extends Activity {
 
     }
 
-    public void play(View v)
+    public void resume(View v)
     {
-        for (int i=0; i< surface.getChildCount(); i++)
-        {
-            if(surface.getChildAt(i) instanceof BouncingBallView)
-                ((BouncingBallView)surface.getChildAt(i)).play();
+        if(paused) {
+            paused = false;
+            for (int i = 0; i < surface.getChildCount(); i++) {
+                if (surface.getChildAt(i) instanceof BouncingBallView)
+                    ((BouncingBallView) surface.getChildAt(i)).play();
+            }
         }
     }
-
-
 }
